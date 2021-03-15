@@ -1,9 +1,6 @@
 package com.itmart.admin.user;
 
-import com.itmart.itmartcommon.entity.User;
-
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
