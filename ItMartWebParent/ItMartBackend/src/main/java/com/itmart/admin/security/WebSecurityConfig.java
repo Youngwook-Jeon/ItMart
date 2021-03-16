@@ -44,7 +44,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .usernameParameter("email")
                     .permitAll()
                 .and()
-                .logout().permitAll();
+                .logout().permitAll()
+                .and()
+                .rememberMe()
+                    .key("KFC_CHICKEN")
+                    .tokenValiditySeconds(60 * 60 * 24 * 7);
     }
 
     @Override
