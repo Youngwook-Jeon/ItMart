@@ -4,6 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 user-photos/
+*.log
 
 ### STS ###
 .apt_generated
