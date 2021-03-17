@@ -1,5 +1,6 @@
-package com.itmart.admin.user;
+package com.itmart.admin.user.controller;
 
+import com.itmart.admin.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.PostMapping;

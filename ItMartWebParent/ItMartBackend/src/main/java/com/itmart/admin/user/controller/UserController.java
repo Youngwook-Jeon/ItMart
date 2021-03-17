@@ -1,6 +1,8 @@
-package com.itmart.admin.user;
+package com.itmart.admin.user.controller;
 
 import com.itmart.admin.FileUploadUtil;
+import com.itmart.admin.user.UserNotFoundException;
+import com.itmart.admin.user.UserService;
 import com.itmart.admin.user.export.UserCsvExporter;
 import com.itmart.admin.user.export.UserExcelExporter;
 import com.itmart.admin.user.export.UserPdfExporter;
@@ -65,7 +67,7 @@ public class UserController {
         model.addAttribute("reverseSortDir", reverseSortDir);
         model.addAttribute("keyword", keyword);
 
-        return "users";
+        return "users/users";
     }
 
     @GetMapping("/users/new")
@@ -78,7 +80,7 @@ public class UserController {
         model.addAttribute("roleList", roleList);
         model.addAttribute("pageTitle", "Create New User");
 
-        return "user_form";
+        return "users/user_form";
     }
 
     @PostMapping("/users/save")
@@ -120,7 +122,7 @@ public class UserController {
             model.addAttribute("pageTitle", "Edit User (ID: " + id + ")");
             model.addAttribute("roleList", roleList);
 
-            return "user_form";
+            return "users/user_form";
         } catch (UserNotFoundException ex) {
             redirectAttributes.addFlashAttribute("message", ex.getMessage());
             return "redirect:/users";

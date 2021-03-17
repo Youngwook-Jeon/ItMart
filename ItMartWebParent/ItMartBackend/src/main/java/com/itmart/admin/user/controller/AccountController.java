@@ -1,7 +1,8 @@
-package com.itmart.admin.user;
+package com.itmart.admin.user.controller;
 
 import com.itmart.admin.FileUploadUtil;
 import com.itmart.admin.security.ItMartUserDetails;
+import com.itmart.admin.user.UserService;
 import com.itmart.itmartcommon.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,7 +34,7 @@ public class AccountController {
         User user = userService.getByEmail(email);
         model.addAttribute("user", user);
 
-        return "account_form";
+        return "users/account_form";
     }
 
     @PostMapping("/account/update")
