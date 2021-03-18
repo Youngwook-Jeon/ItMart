@@ -117,4 +117,27 @@ public class Category {
         copied.setName(name);
         return copied;
     }
+
+    public static Category copyFull(Category category) {
+        Category copied = new Category();
+        copied.setId(category.getId());
+        copied.setName(category.getName());
+        copied.setImage(category.getImage());
+        copied.setAlias(category.getAlias());
+        copied.setEnabled(category.isEnabled());
+
+        return copied;
+    }
+
+    public static Category copyFull(Category category, String name) {
+        Category copied = Category.copyFull(category);
+        copied.setName(name);
+        return copied;
+    }
+
+    @Transient
+    public String getImagePath() {
+        if (this.id == null) return "/image/image-thumbnail.png";
+        return "/category-images/" + this.id + "/" + this.image;
+    }
 }
