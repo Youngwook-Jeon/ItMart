@@ -103,4 +103,18 @@ public class Category {
     public void setChildren(Set<Category> children) {
         this.children = children;
     }
+
+    public static Category copyIdAndName(Category category) {
+        Category copied = new Category();
+        copied.setId(category.getId());
+        copied.setName(category.getName());
+        return copied;
+    }
+
+    public static Category copyIdAndName(Long id, String name) {
+        Category copied = new Category();
+        copied.setId(id);
+        copied.setName(name);
+        return copied;
+    }
 }
