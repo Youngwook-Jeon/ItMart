@@ -2,12 +2,10 @@ package com.itmart.admin.category;
 
 import com.itmart.itmartcommon.entity.Category;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class CategoryService {
@@ -19,22 +17,30 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<Category> listAll() {
-        List<Category> rootCategories = categoryRepository.listRootCategories();
-        return listHierarchicalCategories(rootCategories);
+    public List<Category> listAll(String sortDir) {
+        Sort sort = Sort.by("name");
+
+        if (sortDir.equals("asc")) {
+            sort = sort.ascending();
+        } else if (sortDir.equals("desc")) {
+            sort = sort.descending();
+        }
+
+        List<Category> rootCategories = categoryRepository.listRootCategories(sort);
+        return listHierarchicalCategories(rootCategories, sortDir);
     }
 
-    private List<Category> listHierarchicalCategories(List<Category> rootCategories) {
+    private List<Category> listHierarchicalCategories(List<Category> rootCategories, String sortDir) {
         List<Category> hierarchicalCategories = new ArrayList<>();
         for (Category category : rootCategories) {
             hierarchicalCategories.add(Category.copyFull(category));
 
-            Set<Category> children = category.getChildren();
+            Set<Category> children = sortSubCategories(category.getChildren(), sortDir);
             for (Category subCategory : children) {
                 String name = "--" + subCategory.getName();
                 hierarchicalCategories.add(Category.copyFull(subCategory, name));
 
-                listSubHierarchicalCategories(hierarchicalCategories, subCategory, 1);
+                listSubHierarchicalCategories(hierarchicalCategories, subCategory, 1, sortDir);
             }
         }
 
@@ -42,8 +48,8 @@ public class CategoryService {
     }
 
     private void listSubHierarchicalCategories(List<Category> hierarchicalCategories,
-                                               Category parent, int subLevel) {
-        Set<Category> children = parent.getChildren();
+                                               Category parent, int subLevel, String sortDir) {
+        Set<Category> children = sortSubCategories(parent.getChildren(), sortDir);
         int newSubLevel = subLevel + 1;
         for (Category subCategory : children) {
             StringBuilder name = new StringBuilder();
@@ -52,7 +58,7 @@ public class CategoryService {
             }
             name.append(subCategory.getName());
             hierarchicalCategories.add(Category.copyFull(subCategory, name.toString()));
-            listSubHierarchicalCategories(hierarchicalCategories, subCategory, newSubLevel);
+            listSubHierarchicalCategories(hierarchicalCategories, subCategory, newSubLevel, sortDir);
         }
     }
 
@@ -62,11 +68,12 @@ public class CategoryService {
 
     public List<Category> listCategoriesUsedInForm() {
         List<Category> categoriesUsedInForm = new ArrayList<>();
-        Iterable<Category> categories =  categoryRepository.findAll();
+        Iterable<Category> categories =  categoryRepository
+                .listRootCategories(Sort.by("name").ascending());
         for (Category category : categories) {
             if (category.getParent() == null) {
                 categoriesUsedInForm.add(Category.copyIdAndName(category));
-                Set<Category> children = category.getChildren();
+                Set<Category> children = sortSubCategories(category.getChildren());
 
                 for (Category subCategory : children) {
                     String name = "--" + subCategory.getName();
@@ -81,7 +88,8 @@ public class CategoryService {
     private void listSubCategoriesUsedInForm(List<Category> categoriesUsedInForm,
                                              Category parent, int subLevel) {
         int newSubLevel = subLevel + 1;
-        for (Category subCategory : parent.getChildren()) {
+        Set<Category> children = sortSubCategories(parent.getChildren());
+        for (Category subCategory : children) {
             StringBuilder name = new StringBuilder();
             for (int i = 0; i < newSubLevel; i++) {
                 name.append("--");
@@ -125,5 +133,21 @@ public class CategoryService {
         }
 
         return "OK";
+    }
+
+    private SortedSet<Category> sortSubCategories(Set<Category> children) {
+        return sortSubCategories(children, "asc");
+    }
+
+    private SortedSet<Category> sortSubCategories(Set<Category> children, String sortDir) {
+        SortedSet<Category> sortedChildren = new TreeSet<>((c1, c2) -> {
+            if (sortDir.equals("asc")) {
+                return c1.getName().compareTo(c2.getName());
+            } else {
+                return c2.getName().compareTo(c1.getName());
+            }
+        });
+        sortedChildren.addAll(children);
+        return sortedChildren;
     }
 }

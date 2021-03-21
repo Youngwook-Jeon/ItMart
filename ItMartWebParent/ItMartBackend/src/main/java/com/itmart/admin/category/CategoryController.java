@@ -3,6 +3,7 @@ package com.itmart.admin.category;
 import com.itmart.admin.FileUploadUtil;
 import com.itmart.itmartcommon.entity.Category;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -27,9 +28,15 @@ public class CategoryController {
     }
 
     @GetMapping("/categories")
-    public String listAll(Model model) {
-        List<Category> categoryList = categoryService.listAll();
+    public String listAll(@Param("sortDir") String sortDir, Model model) {
+        if (sortDir == null || sortDir.isEmpty()) {
+            sortDir = "asc";
+        }
+
+        List<Category> categoryList = categoryService.listAll(sortDir);
+        String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
         model.addAttribute("categoryList", categoryList);
+        model.addAttribute("reverseSortDir", reverseSortDir);
         return "categories/categories";
     }
 
