@@ -48,6 +48,13 @@ public class Category {
         this.parent = parent;
     }
 
+    public Category(Long id, String name, String alias) {
+        this();
+        this.id = id;
+        this.name = name;
+        this.alias = alias;
+    }
+
     public Long getId() {
         return id;
     }
