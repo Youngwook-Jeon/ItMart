@@ -4,10 +4,12 @@ import com.itmart.itmartcommon.entity.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 @Service
+@Transactional
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
@@ -149,5 +151,18 @@ public class CategoryService {
         });
         sortedChildren.addAll(children);
         return sortedChildren;
+    }
+
+    public void updateCategoryEnabledStatus(Long id, boolean enabled) {
+        categoryRepository.updateEnabledStatus(id, enabled);
+    }
+
+    public void delete(Long id) throws CategoryNotFoundException {
+        Long countById = categoryRepository.countById(id);
+        if (countById == null || countById == 0) {
+            throw new CategoryNotFoundException("Could not find any category with Id " + id);
+        }
+
+        categoryRepository.deleteById(id);
     }
 }

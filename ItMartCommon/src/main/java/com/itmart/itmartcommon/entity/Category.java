@@ -132,6 +132,7 @@ public class Category {
         copied.setImage(category.getImage());
         copied.setAlias(category.getAlias());
         copied.setEnabled(category.isEnabled());
+        copied.setHasChildren(category.getChildren().size() > 0);
 
         return copied;
     }
@@ -146,5 +147,16 @@ public class Category {
     public String getImagePath() {
         if (this.id == null) return "/image/image-thumbnail.png";
         return "/category-images/" + this.id + "/" + this.image;
+    }
+
+    @Transient
+    private boolean hasChildren;
+
+    public boolean isHasChildren() {
+        return hasChildren;
+    }
+
+    public void setHasChildren(boolean hasChildren) {
+        this.hasChildren = hasChildren;
     }
 }
