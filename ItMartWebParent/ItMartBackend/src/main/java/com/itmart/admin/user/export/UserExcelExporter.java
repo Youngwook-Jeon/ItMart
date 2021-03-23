@@ -1,5 +1,6 @@
 package com.itmart.admin.user.export;
 
+import com.itmart.admin.AbstractExporter;
 import com.itmart.itmartcommon.entity.User;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.xssf.usermodel.*;
@@ -19,7 +20,7 @@ public class UserExcelExporter extends AbstractExporter {
     }
 
     public void export(List<User> userList, HttpServletResponse response) throws IOException {
-        super.setResponseHeader(response, "application/octet-stream", ".xlsx");
+        super.setResponseHeader(response, "application/octet-stream", ".xlsx", "users_");
 
         writeHeaderLine();
         writeDataLines(userList);

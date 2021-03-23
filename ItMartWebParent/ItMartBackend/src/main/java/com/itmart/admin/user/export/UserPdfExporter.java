@@ -1,5 +1,6 @@
 package com.itmart.admin.user.export;
 
+import com.itmart.admin.AbstractExporter;
 import com.itmart.itmartcommon.entity.User;
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
@@ -15,7 +16,7 @@ import java.util.List;
 public class UserPdfExporter extends AbstractExporter {
 
     public void export(List<User> userList, HttpServletResponse response) throws IOException {
-        super.setResponseHeader(response, "application/pdf", ".pdf");
+        super.setResponseHeader(response, "application/pdf", ".pdf", "users_");
 
         Document document = new Document(PageSize.A4);
         PdfWriter.getInstance(document, response.getOutputStream());
