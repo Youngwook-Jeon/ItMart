@@ -25,7 +25,7 @@
                 <div class="col-sm-8">
                     <input type="hidden" th:field="*{logo}" />
                     <input type="file" id="fileImage" name="fileImage" accept="image/png, image/jpeg"
-                           class="mb-2" required />
+                           class="mb-2" th:required="${brand.id == null}" />
                     <div class="mt-2">
                         <img id="thumbnail" alt="image preview" th:src="@{${brand.logoPath}}"
                              class="img-fluid"/>
@@ -50,7 +50,7 @@
             <div class="form-group row">
                 <label class="col-sm-4 col-form-label">Chosen categories:</label>
                 <div class="col-sm-8">
-
+                    <div id="chosenCategories"></div>
                 </div>
             </div>
 
@@ -67,6 +67,26 @@
 </div>
 <script type="text/javascript">
     moduleURL = "[[@{/brands}]]";
+
+    $(document).ready(function () {
+        dropdownCategories = $("#categories");
+        divchosenCategories = $("#chosenCategories");
+
+        dropdownCategories.change(function () {
+            divchosenCategories.empty();
+            showChosenCategories();
+        });
+    });
+
+    function showChosenCategories() {
+        dropdownCategories.children("option:selected").each(function () {
+            selectedCategory = $(this);
+            catId = selectedCategory.val();
+            catName = selectedCategory.text().replace(/-/g, "");
+
+            divchosenCategories.append("<span class='badge badge-secondary m-1'>" + catName + "</span>");
+        });
+    }
 
     function checkUnique(form) {
         categoryId = $("#id").val();
